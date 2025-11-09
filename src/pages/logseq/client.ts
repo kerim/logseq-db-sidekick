@@ -46,6 +46,7 @@ export default class LogseqClientBase {
   };
 
   public isDBGraph = async () => {
-    return await this.baseJson('check_current_is_db_graph', []);
+    const appInfo = await this.baseJson('logseq.App.getAppInfo', []);
+    return appInfo.supportDb;
   };
 }

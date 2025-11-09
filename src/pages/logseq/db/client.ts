@@ -43,7 +43,7 @@ export type LogseqResponseType<T> = {
 
 export default class LogseqClient extends LogseqClientBase implements LogseqClientInterface {
   private getCurrentGraph = async (): Promise<Graph> => {
-    return await this.baseJson('logseq.getCurrentGraph', []);
+    return await this.baseJson('logseq.App.getCurrentGraph', []);
   };
 
   public appendBlock = async (page: string, content: string) => {
@@ -68,7 +68,7 @@ export default class LogseqClient extends LogseqClientBase implements LogseqClie
     pageIdenity: LogseqPageIdenity,
   ): Promise<LogseqPageIdenity> => {
     const resp: LogseqPageIdenity = await this.baseJson(
-      'get_page',
+      'logseq.Editor.getPage',
       [pageIdenity.id || pageIdenity.uuid || pageIdenity.name],
     );
     return resp;
@@ -91,7 +91,8 @@ export default class LogseqClient extends LogseqClientBase implements LogseqClie
   };
 
   public isDBGraph = async () => {
-    return await this.baseJson('logseq.checkCurrentIsDbGraph', []);
+    const appInfo = await this.baseJson('logseq.App.getAppInfo', []);
+    return appInfo.supportDb;
   };
 
   private showMsgInternal = async (

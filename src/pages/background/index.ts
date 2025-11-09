@@ -6,17 +6,40 @@ import { format } from 'date-fns';
 import { changeOptionsHostToHostNameAndPort } from './upgrade';
 import {getLogseqService} from '@pages/logseq/tool';
 
+console.log('[Logseq Copilot] Background script loaded');
+
 browser.runtime.onConnect.addListener((port) => {
+  console.log('[Logseq Copilot] Port connected:', port);
   port.onMessage.addListener((msg) => {
     if (msg.type === 'query') {
+      console.log('[Logseq Copilot] Received query:', msg.query);
       const promise = new Promise(async () => {
-        const logseqService = await getLogseqService();
-        const searchRes = await logseqService.search(msg.query);
-        console.debug("search result", searchRes)
-        port.postMessage(searchRes);
+        try {
+          console.log('[Logseq Copilot] Getting service...');
+          const logseqService = await getLogseqService();
+          console.log('[Logseq Copilot] Searching...');
+          const searchRes = await logseqService.search(msg.query);
+          console.log('[Logseq Copilot] Search result:', searchRes);
+          port.postMessage(searchRes);
+        } catch (error) {
+          console.error('[Logseq Copilot] Error during search:', error);
+
+          // If it's a Response object, try to get more details
+          if (error instanceof Response) {
+            const errorText = await error.text().catch(() => 'Could not read error text');
+            console.error('[Logseq Copilot] Error response status:', error.status);
+            console.error('[Logseq Copilot] Error response text:', errorText);
+          }
+
+          port.postMessage({
+            status: 500,
+            msg: error.message || error.toString() || 'Search failed',
+            response: null
+          });
+        }
       });
 
-      promise.catch((err) => console.error(err));
+      promise.catch((err) => console.error('[Logseq Copilot] Promise error:', err));
     } else if (msg.type === 'open-options') {
       browser.runtime.openOptionsPage();
     } else {

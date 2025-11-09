@@ -32,7 +32,7 @@ export default class LogseqDBService implements LogseqServiceInterface {
         .filter((item) => item['page?'] === true)
         .map(async (item) => {
           return await this.client.getPage({
-            uuid: item['block/uuid']['uuid'],
+            uuid: item.uuid,
           });
         }),
     );
@@ -41,7 +41,7 @@ export default class LogseqDBService implements LogseqServiceInterface {
         .filter((item) => item['page?'] === false)
         .map(
           async (item) =>
-            await this.getBlock(item['block/uuid']['uuid'], graphName, query),
+            await this.getBlock(item.uuid, graphName, query),
         ),
     );
 

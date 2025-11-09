@@ -16,10 +16,24 @@ import searchEngines, {
 
 const connect = Browser.runtime.connect();
 
+console.log('[Logseq Copilot Content] Connection established:', connect);
+
+connect.onDisconnect.addListener(() => {
+  console.error('[Logseq Copilot Content] Connection disconnected!', Browser.runtime.lastError);
+});
+
 const mount = async (container: Element, query: string) => {
   const root = createRoot(container);
 
-  connect.postMessage({ type: 'query', query: query });
+  console.log('[Logseq Copilot Content] Sending query to background:', query);
+  console.log('[Logseq Copilot Content] Connection state:', connect);
+
+  try {
+    connect.postMessage({ type: 'query', query: query });
+    console.log('[Logseq Copilot Content] Message sent successfully');
+  } catch (error) {
+    console.error('[Logseq Copilot Content] Error sending message:', error);
+  }
 
   root.render(<LogseqCopliot connect={connect} />);
 };
