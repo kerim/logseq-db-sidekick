@@ -1,8 +1,8 @@
-import { getLogseqCopliotConfig } from '@/config';
+import { getLogseqSidekickConfig } from '@/config';
 import { fixDuckDuckGoDark } from '@/utils';
 import { createRoot } from 'react-dom/client';
 import Browser from 'webextension-polyfill';
-import { LogseqCopliot } from './LogseqCopliot';
+import { LogseqSidekickComponent } from './LogseqSidekick';
 import mountQuickCapture from './QuickCapture';
 import searchEngines, {
   Baidu,
@@ -16,32 +16,32 @@ import searchEngines, {
 
 const connect = Browser.runtime.connect();
 
-console.log('[Logseq Copilot Content] Connection established:', connect);
+console.log('[Logseq DB Sidekick] Connection established:', connect);
 
 connect.onDisconnect.addListener(() => {
-  console.error('[Logseq Copilot Content] Connection disconnected!', Browser.runtime.lastError);
+  console.error('[Logseq DB Sidekick] Connection disconnected!', Browser.runtime.lastError);
 });
 
 const mount = async (container: Element, query: string) => {
   const root = createRoot(container);
 
-  console.log('[Logseq Copilot Content] Sending query to background:', query);
-  console.log('[Logseq Copilot Content] Connection state:', connect);
+  console.log('[Logseq DB Sidekick] Sending query to background:', query);
+  console.log('[Logseq DB Sidekick] Connection state:', connect);
 
   try {
     connect.postMessage({ type: 'query', query: query });
-    console.log('[Logseq Copilot Content] Message sent successfully');
+    console.log('[Logseq DB Sidekick] Message sent successfully');
   } catch (error) {
-    console.error('[Logseq Copilot Content] Error sending message:', error);
+    console.error('[Logseq DB Sidekick] Error sending message:', error);
   }
 
-  root.render(<LogseqCopliot connect={connect} />);
+  root.render(<LogseqSidekickComponent connect={connect} />);
 };
 
 async function run(
   searchEngine: Google | Bing | Ecosia | DuckDuckGo | Yandex | SearX | Baidu,
 ) {
-  console.debug('Logseq copliot', window.location.hostname);
+  console.debug('Logseq DB Sidekick', window.location.hostname);
 
   if (searchEngine instanceof DuckDuckGo) {
     fixDuckDuckGoDark()
@@ -72,7 +72,7 @@ if (searchEngine) {
   }
 }
 
-getLogseqCopliotConfig().then(({ enableClipNoteFloatButton }) => {
+getLogseqSidekickConfig().then(({ enableClipNoteFloatButton }) => {
   if (!enableClipNoteFloatButton) return;
   mountQuickCapture();
 });

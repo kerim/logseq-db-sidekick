@@ -1,7 +1,7 @@
 import {
-  LogseqCopliotConfig,
-  getLogseqCopliotConfig,
-  saveLogseqCopliotConfig,
+  LogseqSidekickConfig,
+  getLogseqSidekickConfig,
+  saveLogseqSidekickConfig,
 } from '@/config';
 import {
   Heading,
@@ -22,13 +22,13 @@ import Browser from 'webextension-polyfill';
 export const ClipNoteOptions = () => {
   const [init, setInit] = React.useState(false);
 
-  const [logseqConfig, setLogseqConfig] = React.useState<LogseqCopliotConfig>();
+  const [logseqConfig, setLogseqConfig] = React.useState<LogseqSidekickConfig>();
 
   const [clipShortCut, setClipShortCut] = React.useState();
 
   useEffect(() => {
     if (!init) {
-      getLogseqCopliotConfig().then((config) => {
+      getLogseqSidekickConfig().then((config) => {
         setLogseqConfig(config);
         setInit(true);
       });
@@ -49,7 +49,7 @@ export const ClipNoteOptions = () => {
       ...logseqConfig,
       [key]: value,
     });
-    saveLogseqCopliotConfig({
+    saveLogseqSidekickConfig({
       [key]: value,
     });
   };

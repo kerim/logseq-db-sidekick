@@ -1,10 +1,10 @@
-import { getLogseqCopliotConfig, saveLogseqCopliotConfig } from "@/config";
+import { getLogseqSidekickConfig, saveLogseqSidekickConfig } from "@/config";
 
 export const changeOptionsHostToHostNameAndPort = async() => {
-  const { logseqHost } = await getLogseqCopliotConfig();
+  const { logseqHost } = await getLogseqSidekickConfig();
   if (logseqHost) {
     const url = new URL(logseqHost);
-    await saveLogseqCopliotConfig({
+    await saveLogseqSidekickConfig({
       logseqHostName: url.hostname,
       logseqPort: parseInt(url.port),
     });

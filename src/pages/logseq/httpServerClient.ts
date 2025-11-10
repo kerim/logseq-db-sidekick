@@ -5,7 +5,7 @@ import {
   UnknownIssues,
 } from './error';
 import { LogseqClientInterface } from './interfaces';
-import { getLogseqCopliotConfig } from '../../config';
+import { getLogseqSidekickConfig } from '../../config';
 
 type Graph = {
   name: string;
@@ -46,7 +46,7 @@ export default class HttpServerClient implements LogseqClientInterface {
 
   private async getConfig() {
     if (!this.serverUrl) {
-      const config = await getLogseqCopliotConfig();
+      const config = await getLogseqSidekickConfig();
       this.serverUrl = config.logseqHost || 'http://localhost:8765';
       this.graphName = config.graphName || '';
     }

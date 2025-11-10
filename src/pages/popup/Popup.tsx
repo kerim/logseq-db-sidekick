@@ -62,9 +62,9 @@ export default function Popup() {
   };
 
   return (
-    <div className="copilot">
+    <div className="sidekick">
       <div className={styles.content}>
-        <div className={styles.copilotCardHeader}>
+        <div className={styles.sidekickCardHeader}>
           <span>Graph: {logseqSearchResult?.graph}</span>
           <IconSettings size={16} onClick={openSettingsPage} />
         </div>

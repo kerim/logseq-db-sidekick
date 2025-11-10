@@ -1,39 +1,76 @@
-# Logseq Copilot 🚀
+# Logseq DB Sidekick 🚀
+
+> **Forked from [Logseq Copilot](https://github.com/EINDEX/logseq-copilot) by [@EINDEX](https://github.com/EINDEX)**
+> A specialized version focused on **DB graphs only** with **HTTP server integration** for **search-only** functionality.
 
 <p align="center">
   <a href="LICENSE" target="_blank">
-    <img alt="GPL-3.0 License" src="https://img.shields.io/github/license/eindex/logseq-copilot.svg?style=flat-square" />
+    <img alt="GPL-3.0 License" src="https://img.shields.io/github/license/kerim/logseq-db-sidekick.svg?style=flat-square" />
   </a>
-
-  <!-- TypeScript Badge -->
   <img alt="TypeScript" src="https://img.shields.io/badge/-TypeScript-blue?style=flat-square&logo=typescript&logoColor=white" />
-
-  <a href="https://chrome.google.com/webstore/detail/hihgfcgbmnbomabfdbajlbpnacndeihl" target="_blank">
-    <img alt="Chrome" src="https://img.shields.io/chrome-web-store/stars/hihgfcgbmnbomabfdbajlbpnacndeihl?color=blue&label=Chrome&style=flat-square&logo=google-chrome&logoColor=white" />
-  </a>
-
-  <a href="https://microsoftedge.microsoft.com/addons/detail/logseq-copilot/ebigopegbohijaikegebaaboaomaifoi" target="_blank">
-    <img alt="Microsoft Edge" src="https://img.shields.io/badge/Microsoft%20Edge-gray?style=flat-square&logo=microsoftedge">
-  </a>
-
-  <a href="https://addons.mozilla.org/en-US/firefox/addon/logseq-copilot/" target="_blank">
-    <img alt="Firefox" src="https://img.shields.io/amo/stars/logseq-copilot?color=orange&label=Firefox&style=flat-square&logo=firefox&logoColor=white" />
-  </a>
 </p>
 
+Logseq DB Sidekick is a browser extension that allows you to access your Logseq **DB graphs** while browsing. It shows relevant notes from your Logseq database alongside search results on popular search engines. This fork is specifically designed to work with Logseq's new database graph format via an HTTP server. 🧠
 
-Logseq Copilot is a Chrome extension that allows you to access your Logseq using your browser. Logseq is a privacy-first, open-source platform for knowledge sharing and management. With Logseq Copilot, you can easily retrieve relevant information from your Logseq graph and enrich your online search, reading, and learning experience. 🧠
+## What Makes This Fork Different?
 
-[Documents](https://logseq-copilot.eindex.me)
+This fork differs from the original Logseq Copilot in several key ways:
+
+- **DB Graphs Only**: Works exclusively with Logseq's new database (DB) graph format, not file-based/markdown graphs
+- **HTTP Server Architecture**: Uses a separate Python HTTP server instead of Logseq's plugin API
+- **Search-Only Focus**: Designed purely for displaying search results - no editing, no quick capture features
+- **Independent Operation**: Doesn't require Logseq Desktop to be running
+
+## Requirements
+
+- **Logseq HTTP Server** - A companion server that wraps @logseq/cli commands
+  - See setup instructions: [logseq-http-server](https://github.com/kerim/logseq-http-server)
+- **DB Graph** - Only works with Logseq database graphs (not file-based graphs)
 
 ## Features
 
-- 🔍 Show Logseq content when you search on popular search engines via your keywords. Now support Google, Bing, Ecosia, Baidu, Yandex, DuckDuckGo, SearX.
-- Support Logseq DB version.
-- Recall your note on every page.
+- 🔍 Show Logseq DB graph content when you search on popular search engines
+- 🌐 Supports Google, Bing, Ecosia, Baidu, Yandex, DuckDuckGo, SearX
+- 📊 Full-text search across all block content
+- 🔗 Direct links to open blocks in Logseq Desktop
 
-## Support
-<p align="center">
+## Installation
+
+### HTTP Server Setup (Required First)
+
+1. Install the HTTP server from: https://github.com/kerim/logseq-http-server
+2. Start the server: `python3 logseq_server.py`
+3. The server will run on `http://localhost:8765` by default
+
+### Browser Extension
+
+*(Installation instructions to be added - currently in development)*
+
+## Configuration
+
+After installing:
+
+1. Click the extension icon and go to Settings
+2. Configure HTTP Server connection:
+   - **Host**: `localhost` (default)
+   - **Port**: `8765` (default)
+3. Click "Refresh Graphs" to load your available DB graphs
+4. Select your graph from the dropdown
+5. Click "Connect" to verify connection
+
+## Credits & Acknowledgments
+
+This project would not exist without:
+
+- **[Logseq Copilot](https://github.com/EINDEX/logseq-copilot)** by [@EINDEX](https://github.com/EINDEX) - The original extension that this fork is based on
+- **[Logseq](https://logseq.com)** - The amazing knowledge management platform
+- **[chatGPT4Google](https://github.com/wong2/chatgpt-google-extension)** - Inspiration for the original Logseq Copilot architecture
+
+## Support the Original Creator
+
+If you find this tool useful, please consider supporting the original creator of Logseq Copilot:
+
+<p align="left">
    <a href="https://img.shields.io/github/sponsors/eindex" target="_blank">
       <img alt="GitHub Sponsors" src="https://img.shields.io/github/sponsors/eindex?style=flat-square&logo=github">
    </a>
@@ -42,45 +79,19 @@ Logseq Copilot is a Chrome extension that allows you to access your Logseq using
   </a>
 </p>
 
-## Screenshot
-
-![](docs/screenshots/screenshot.png)
-
-## Roadmap
-
-- [x] 🚦 CI/CD: Set up a continuous integration and delivery pipeline for the extension development and deployment. 🚦
-
-- [x] 🔍 Support other search engines: Extend the functionality of the extension to other popular search engines, such as Bing, DuckDuckGo, and Baidu. 
-- [x] 💅 Style enhancement: Improve the appearance and usability of the extension interface and the blocks display.
-- [x] 🌐 Support Firefox.
-- [x] 🆕 Browser new tab page queries: Add an option to show Logseq blocks on the browser's new tab page based on predefined or random queries. 
-- [x] QuickCapture & advance quick capture, easy and fast making note in Logseq.
-
-- ~~Enhance search ranking for better blocks: Implement a more sophisticated algorithm for ranking the blocks based on their relevance to the search query and the user preferences. 📊~~ Now this feature depends on Logseq Searching API
-- ~~Query enhance to recall more blocks: Implement a more flexible and powerful query system for retrieving the blocks from the Logseq graph, such as using natural language or advanced operators. 🗣️~~ Now this feature depends on Logseq Searching API
-
-_Welcoming more ideas._
-
 ## Contributing
 
-Logseq Copilot is an open-source project and welcomes contributions from anyone who is interested in improving it. If you want to contribute, please follow these steps: 🙌
+Contributions are welcome! If you want to contribute:
 
-- Fork this repository and clone it to your local machine. 🍴
-- Create a new branch for your feature or bug fix. 🌿
-- Make your changes and commit them with a clear and concise message.
-
-
-
-## Credits
-
-- [Logseq](https://logseq.com)
-- [chatGPT4Google](https://github.com/wong2/chatgpt-google-extension)
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=eindex/logseq-copilot&type=Date)](https://star-history.com/#eindex/logseq-copilot&Date)
+- Fork this repository and clone it to your local machine
+- Create a new branch for your feature or bug fix
+- Make your changes and commit them with a clear message
+- Submit a pull request
 
 ## License
 
-GPLv3
+GPLv3 - Same as the original Logseq Copilot project
 
+## Differences From Original
+
+For a detailed comparison with the original Logseq Copilot, see [DIFFERENCES.md](DIFFERENCES.md)

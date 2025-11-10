@@ -1,6 +1,6 @@
 import Browser from 'webextension-polyfill';
 
-export type LogseqCopliotConfig = {
+export type LogseqSidekickConfig = {
   version: string;
   logseqHost: string;
   logseqHostName: string;
@@ -13,8 +13,8 @@ export type LogseqCopliotConfig = {
   clipNoteTemplate: string;
 };
 
-export const getLogseqCopliotConfig =
-  async (): Promise<LogseqCopliotConfig> => {
+export const getLogseqSidekickConfig =
+  async (): Promise<LogseqSidekickConfig> => {
     const {
       version = '',
       logseqHost = 'http://localhost:8765',
@@ -42,9 +42,9 @@ export const getLogseqCopliotConfig =
     };
   };
 
-export const saveLogseqCopliotConfig = async (
-  updates: Partial<LogseqCopliotConfig>,
+export const saveLogseqSidekickConfig = async (
+  updates: Partial<LogseqSidekickConfig>,
 ) => {
-  console.log('saveLogseqCopliotConfig', updates);
+  console.log('saveLogseqSidekickConfig', updates);
   await Browser.storage.local.set(updates);
 };

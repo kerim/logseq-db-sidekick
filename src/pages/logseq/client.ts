@@ -1,4 +1,4 @@
-import { getLogseqCopliotConfig } from '../../config';
+import { getLogseqSidekickConfig } from '../../config';
 
 export type LogseqPageResponse = {
   name: string;
@@ -15,7 +15,7 @@ export type LogseqResponseType<T> = {
 
 export default class LogseqClientBase {
   baseFetch = async (method: string, args: any[]) => {
-    const config = await getLogseqCopliotConfig();
+    const config = await getLogseqSidekickConfig();
     const endPoint = new URL(config.logseqHost);
     const apiUrl = new URL(`${endPoint.origin}/api`);
     const resp = await fetch(apiUrl, {

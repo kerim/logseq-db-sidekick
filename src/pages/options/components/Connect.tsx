@@ -14,9 +14,9 @@ import {
 import React, { useEffect } from 'react';
 
 import {
-  getLogseqCopliotConfig,
-  saveLogseqCopliotConfig,
-  LogseqCopliotConfig,
+  getLogseqSidekickConfig,
+  saveLogseqSidekickConfig,
+  LogseqSidekickConfig,
 } from '@/config';
 import { getLogseqService } from '@pages/logseq/tool';
 
@@ -26,7 +26,7 @@ export const LogseqConnectOptions = () => {
   const [connected, setConnected] = React.useState(false);
   const [buttonMessage, setButtonMessage] = React.useState('Connect');
   const [showToken, setShowToken] = React.useState(false);
-  const [logseqConfig, setLogseqConfig] = React.useState<LogseqCopliotConfig>();
+  const [logseqConfig, setLogseqConfig] = React.useState<LogseqSidekickConfig>();
   const [availableGraphs, setAvailableGraphs] = React.useState<string[]>([]);
   const [loadingGraphs, setLoadingGraphs] = React.useState(false);
 
@@ -59,7 +59,7 @@ export const LogseqConnectOptions = () => {
     }
 
     const promise = new Promise(async () => {
-      await saveLogseqCopliotConfig({
+      await saveLogseqSidekickConfig({
         logseqAuthToken: logseqConfig!.logseqAuthToken,
         logseqHostName: logseqConfig?.logseqHostName,
         logseqPort: logseqConfig?.logseqPort,
@@ -98,7 +98,7 @@ export const LogseqConnectOptions = () => {
 
   useEffect(() => {
     if (!init) {
-      getLogseqCopliotConfig().then((config) => {
+      getLogseqSidekickConfig().then((config) => {
         console.log('inti');
         setLogseqConfig(config);
         setInit(true);
@@ -119,7 +119,7 @@ export const LogseqConnectOptions = () => {
   const checkConnection = async (): Promise<boolean> => {
     setLoading(true);
     const service = await getLogseqService();
-    const resp = await service.showMsg('Logseq Copilot HTTP Connect!');
+    const resp = await service.showMsg('Logseq DB Sidekick HTTP Connect!');
     const connectStatus = resp.msg === 'success';
     setConnected(connectStatus);
     if (connectStatus) {

@@ -4,10 +4,10 @@ import Browser from 'webextension-polyfill';
 import { LogseqBlock } from './LogseqBlock';
 import LogseqPageLink from './LogseqPage';
 
-const LogseqCopilot = ({ graph, pages, blocks }) => {
-  console.log('[LogseqCopilot Component] Rendering with:', { graph, pages, blocks });
-  console.log('[LogseqCopilot Component] Blocks length:', blocks?.length);
-  console.log('[LogseqCopilot Component] Pages length:', pages?.length);
+const LogseqSidekick = ({ graph, pages, blocks }) => {
+  console.log('[Logseq DB Sidekick] Rendering with:', { graph, pages, blocks });
+  console.log('[Logseq DB Sidekick] Blocks length:', blocks?.length);
+  console.log('[Logseq DB Sidekick] Pages length:', pages?.length);
 
   const goOptionPage = () => {
     Browser.runtime.sendMessage({ type: 'open-options' });
@@ -68,7 +68,7 @@ const LogseqCopilot = ({ graph, pages, blocks }) => {
 
   return (
     <>
-      <div className={styles.copilotCardHeader}>
+      <div className={styles.sidekickCardHeader}>
         <span>Graph: {graph}</span>
         <IconSettings onClick={goOptionPage} size={16} />
       </div>
@@ -78,4 +78,4 @@ const LogseqCopilot = ({ graph, pages, blocks }) => {
   );
 };
 
-export default LogseqCopilot;
+export default LogseqSidekick;

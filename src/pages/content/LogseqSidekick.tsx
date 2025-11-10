@@ -3,21 +3,21 @@ import { LogseqSearchResult } from '@/types/logseqBlock';
 import { LogseqResponseType } from '../logseq/client';
 import Browser from 'webextension-polyfill';
 import styles from './index.module.scss';
-import LogseqCopilot from '@components/LogseqCopilot';
-type LogseqCopliotProps = {
+import LogseqSidekick from '@components/LogseqSidekick';
+type LogseqSidekickProps = {
   connect: Browser.Runtime.Port;
 };
 
-export const LogseqCopliot = ({ connect }: LogseqCopliotProps) => {
+export const LogseqSidekickComponent = ({ connect }: LogseqSidekickProps) => {
   const [msg, setMsg] = React.useState('Loading...');
   const [logseqSearchResult, setLogseqSearchResult] =
     React.useState<LogseqSearchResult>();
 
   connect.onMessage.addListener(
     (resp: LogseqResponseType<LogseqSearchResult>) => {
-      console.log('[Logseq Copilot Content] Received response:', resp);
-      console.log('[Logseq Copilot Content] Response msg:', resp.msg);
-      console.log('[Logseq Copilot Content] Response data:', resp.response);
+      console.log('[Logseq DB Sidekick] Received response:', resp);
+      console.log('[Logseq DB Sidekick] Response msg:', resp.msg);
+      console.log('[Logseq DB Sidekick] Response data:', resp.response);
       setMsg(resp.msg);
       setLogseqSearchResult(resp.response);
     },
@@ -30,7 +30,7 @@ export const LogseqCopliot = ({ connect }: LogseqCopliotProps) => {
   const statusShower = () => {
     if (msg === 'success') {
       return (
-        <LogseqCopilot
+        <LogseqSidekick
           graph={logseqSearchResult?.graph || ''}
           blocks={logseqSearchResult?.blocks || []}
           pages={logseqSearchResult?.pages || []}
@@ -47,16 +47,15 @@ export const LogseqCopliot = ({ connect }: LogseqCopliotProps) => {
   };
 
   return (
-    <div className={styles.copilot}>
-      <div className={styles.copilotBody}>{statusShower()}</div>
+    <div className={styles.sidekick}>
+      <div className={styles.sidekickBody}>{statusShower()}</div>
 
-      <div className={styles.copilotFooter}>
+      <div className={styles.sidekickFooter}>
         <span>
-          <a href="https://github.com/EINDEX/logseq-copilot/issues">Feedback</a>
+          <a href="https://github.com/kerim/logseq-db-sidekick/issues">Feedback</a>
         </span>
         <span>
-          power by{' '}
-          <a href="https://logseq-copilot.eindex.me/">Logseq Copliot</a>
+          Logseq DB Sidekick
         </span>
       </div>
     </div>

@@ -1,11 +1,11 @@
 {
-  "name": "logseq-copilot-http",
-  "version": "0.0.7",
-  "description": "Logseq Copilot HTTP - Connect with logseq-http-server to access your Logseq graphs without requiring Logseq Desktop to be running.",
+  "name": "logseq-db-sidekick",
+  "version": "0.0.8",
+  "description": "Logseq DB Sidekick - A search-only browser extension that shows relevant notes from your Logseq DB graph while browsing the web.",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kerim/logseq-copilot-http.git"
+    "url": "https://github.com/kerim/logseq-db-sidekick.git"
   },
   "scripts": {
     "test": "jest",

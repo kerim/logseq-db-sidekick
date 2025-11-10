@@ -5,7 +5,7 @@ import Browser from 'webextension-polyfill';
 import logo from '../../assets/img/logo.png';
 import scssStyles from './index.module.scss';
 
-const logseqCopilotPopupId = 'logseq-copilot-popup';
+const logseqSidekickPopupId = 'logseq-sidekick-popup';
 export const zIndex = '2147483647';
 const highlights = CSS.highlights;
 
@@ -34,10 +34,10 @@ const clipPage = () => {
 
 const setHighlight = (range: Range) => {
   try {
-    if (!highlights.has("copilot-highlight")) {
-      highlights.set('copilot-highlight', new Highlight())
+    if (!highlights.has("sidekick-highlight")) {
+      highlights.set('sidekick-highlight', new Highlight())
     }
-    const highlight = highlights.get('copilot-highlight');
+    const highlight = highlights.get('sidekick-highlight');
     highlight.add(range);
   } catch (error) {
     console.debug("platform not support highlight function")
@@ -110,7 +110,7 @@ const QuickCapture = () => {
 
 const mountQuickCapture = () => {
   const contrainer = document.createElement('div');
-  contrainer.id = logseqCopilotPopupId;
+  contrainer.id = logseqSidekickPopupId;
   document.getElementsByTagName('body')[0].appendChild(contrainer);
   const root = createRoot(contrainer);
 

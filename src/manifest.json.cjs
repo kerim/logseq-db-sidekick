@@ -27,9 +27,9 @@ const build = (releaseFor) => {
     manifest_version: 3,
     version: process.env.VERSION?.replace('v', '') ?? '0.0.0',
     author: 'eindex.lee@gmail.com',
-    name: 'Logseq Copilot',
+    name: 'Logseq DB Sidekick',
     description:
-      'Logseq Copilot, Connect with you logseq API server, bring your information when you browsing.',
+      'Shows relevant notes from your Logseq DB graph while browsing the web. Search-only, works with DB graphs.',
     chrome_url_overrides: {},
     icons: {
       192: 'assets/img/logo-192.png',
@@ -43,7 +43,7 @@ const build = (releaseFor) => {
     ],
     action: {
       default_popup: 'popup.html',
-      default_title: 'Logseq Copilot',
+      default_title: 'Logseq DB Sidekick',
     },
     options_ui: {
       page: 'options.html',

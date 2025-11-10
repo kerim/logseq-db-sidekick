@@ -1,7 +1,7 @@
 @import url(../../icon.css);
 @tailwind base;
 
-.copilot {
+.sidekick {
   @apply flex flex-col w-full max-w-sm gap-2 pb-4;
 
   ul,
@@ -14,7 +14,7 @@
   }
 }
 
-.copilotBody {
+.sidekickBody {
   @apply flex flex-col -m-2 gap-2;
 }
 
@@ -33,7 +33,7 @@
   }
 }
 
-.copilotCardHeader {
+.sidekickCardHeader {
   @apply flex flex-row justify-between items-center text-sm pb-2;
 
   a {
@@ -41,7 +41,7 @@
   }
 }
 
-.copilotFooter {
+.sidekickFooter {
   @apply flex flex-row text-xs justify-between text-gray-500 mt-2;
 
   a {
@@ -53,7 +53,7 @@
   @apply rounded-lg h-6 w-6;
 }
 
-::highlight(copilot-highlight) {
+::highlight(sidekick-highlight) {
   background-color: rgba(255, 192, 4, 0.5);
   color: black;
 }

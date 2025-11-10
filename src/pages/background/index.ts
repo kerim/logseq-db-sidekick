@@ -1,36 +1,36 @@
 import { browser } from '@/browser';
-import { getLogseqCopliotConfig } from '../../config';
+import { getLogseqSidekickConfig } from '../../config';
 import { blockRending, versionCompare } from './utils';
 import { debounce } from '@/utils';
 import { format } from 'date-fns';
 import { changeOptionsHostToHostNameAndPort } from './upgrade';
 import {getLogseqService} from '@pages/logseq/tool';
 
-console.log('[Logseq Copilot] Background script loaded');
+console.log('[Logseq DB Sidekick] Background script loaded');
 
 browser.runtime.onConnect.addListener((port) => {
-  console.log('[Logseq Copilot] Port connected:', port);
+  console.log('[Logseq DB Sidekick] Port connected:', port);
   port.onMessage.addListener((msg) => {
     if (msg.type === 'query') {
-      console.log('[Logseq Copilot] Received query:', msg.query);
+      console.log('[Logseq DB Sidekick] Received query:', msg.query);
       const promise = new Promise(async () => {
         try {
-          console.log('[Logseq Copilot] Getting service...');
+          console.log('[Logseq DB Sidekick] Getting service...');
           const logseqService = await getLogseqService();
-          console.log('[Logseq Copilot] Searching...');
+          console.log('[Logseq DB Sidekick] Searching...');
           const searchRes = await logseqService.search(msg.query);
-          console.log('[Logseq Copilot] Search result:', searchRes);
+          console.log('[Logseq DB Sidekick] Search result:', searchRes);
           port.postMessage(searchRes);
         } catch (error) {
-          console.error('[Logseq Copilot] Error during search:', error);
+          console.error('[Logseq DB Sidekick] Error during search:', error);
 
           let errorMsg = 'Search failed';
 
           // If it's a Response object, try to get more details
           if (error instanceof Response) {
             const errorText = await error.text().catch(() => 'Could not read error text');
-            console.error('[Logseq Copilot] Error response status:', error.status);
-            console.error('[Logseq Copilot] Error response text:', errorText);
+            console.error('[Logseq DB Sidekick] Error response status:', error.status);
+            console.error('[Logseq DB Sidekick] Error response text:', errorText);
             errorMsg = `HTTP error ${error.status}`;
           } else if (error instanceof Error) {
             errorMsg = error.message;
@@ -49,7 +49,7 @@ browser.runtime.onConnect.addListener((port) => {
         }
       });
 
-      promise.catch((err) => console.error('[Logseq Copilot] Promise error:', err));
+      promise.catch((err) => console.error('[Logseq DB Sidekick] Promise error:', err));
     } else if (msg.type === 'open-options') {
       browser.runtime.openOptionsPage();
     } else {
@@ -94,7 +94,7 @@ const quickCapture = async (data: string) => {
   if (!tab) return;
   const activeTab = tab;
   const { clipNoteLocation, clipNoteCustomPage, clipNoteTemplate } =
-    await getLogseqCopliotConfig();
+    await getLogseqSidekickConfig();
   const now = new Date();
   const logseqService = await getLogseqService();
 

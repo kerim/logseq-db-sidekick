@@ -15,10 +15,10 @@ const Options = () => {
     <Container className={styles.options} maxW={'56rem'} mt={'1rem'}>
       <Flex direction={'row'}>
         <Flex direction={'column'} w={'16rem'}>
-          <Heading>Logseq Copilot</Heading>
+          <Heading>Logseq DB Sidekick</Heading>
           <Text>
             <Link
-              href={`https://github.com/EINDEX/logseq-copilot/releases/tag/${process.env.VERSION}`}
+              href={`https://github.com/kerim/logseq-db-sidekick/releases/tag/${process.env.VERSION}`}
             >
               {process.env.VERSION}
             </Link>
