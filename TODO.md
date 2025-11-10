@@ -1,9 +1,10 @@
 # Logseq DB Sidekick - Development TODO
 
-**Last Updated**: 2025-11-10
-**Current Version**: 0.0.7
+**Last Updated**: 2025-11-10 (Evening)
+**Current Version**: 0.0.8
 **Project Location**: `/Users/niyaro/Documents/Code/logseq-copilot-http`
 **HTTP Server Location**: `/Users/niyaro/Documents/Code/logseq-http-server`
+**GitHub Repo**: https://github.com/kerim/logseq-db-sidekick
 
 ## Project Overview
 
@@ -19,38 +20,56 @@ Browser extension that displays relevant Logseq search results while browsing th
 
 ## Current Sprint: UX & Infrastructure Improvements
 
-### Phase 1: GitHub Repository Setup ✅ / 🔄 / ⏸️
-**Status**: Not Started
-**Goal**: Create private GitHub repo with full source code and documentation
+### Phase 0: Project Renaming & GitHub Setup ✅ COMPLETED
+**Status**: ✅ Completed on 2025-11-10
+**Goal**: Rename project from "Logseq Copilot" to "Logseq DB Sidekick" and set up GitHub repo
 
-**Tasks**:
-- [ ] Create private GitHub repository
-- [ ] Push current extension code (v0.0.7)
-- [ ] Push HTTP server code
-- [ ] Create comprehensive README.md (for future public release)
-- [ ] Add .gitignore for node_modules, build artifacts
-- [ ] Tag release as v0.0.7
+**Completed Tasks**:
+- ✅ Renamed all "Logseq Copilot" → "Logseq DB Sidekick" throughout codebase
+- ✅ Updated package.json: name, description, repo URL
+- ✅ Renamed component files:
+  - `LogseqCopilot.tsx` → `LogseqSidekick.tsx`
+  - `LogseqCopliot.tsx` → `LogseqSidekick.tsx`
+- ✅ Updated all TypeScript types and function names:
+  - `LogseqCopliotConfig` → `LogseqSidekickConfig`
+  - `getLogseqCopliotConfig` → `getLogseqSidekickConfig`
+  - `saveLogseqCopliotConfig` → `saveLogseqSidekickConfig`
+- ✅ Updated CSS class names (copilot → sidekick)
+- ✅ Updated all console log messages
+- ✅ Updated manifest.json with new extension name
+- ✅ Created comprehensive README.md with proper attribution to original Logseq Copilot
+- ✅ Committed and pushed all changes
+- ✅ Renamed GitHub repo: `logseq-copilot-db-fix` → `logseq-db-sidekick`
+- ✅ Updated local git remote URL
+- ✅ Version bumped: 0.0.7 → 0.0.8
+- ✅ All tests passing
 
-**Key Files**:
-- `/Users/niyaro/Documents/Code/logseq-copilot-http/` (entire directory)
-- `/Users/niyaro/Documents/Code/logseq-http-server/` (entire directory)
+**Key Changes Made**:
+- **20 files** modified with systematic renaming
+- **README.md** prominently credits original creator (@EINDEX) with links
+- **License** maintained as GPLv3 (same as original)
+- **GitHub URL**: https://github.com/kerim/logseq-db-sidekick
 
-**Commands**:
-```bash
-cd /Users/niyaro/Documents/Code/logseq-copilot-http
-git init  # if not already initialized
-gh repo create logseq-db-sidekick --private
-git add .
-git commit -m "Initial commit: v0.0.7 - Working search with DB graph support"
-git push -u origin main
-git tag v0.0.7
-git push --tags
+**Files Changed**:
 ```
+package.json, README.md, src/config.ts, src/manifest.json.cjs
+src/components/LogseqCopilot.tsx → LogseqSidekick.tsx
+src/pages/content/LogseqCopliot.tsx → LogseqSidekick.tsx
+src/pages/content/index.tsx, QuickCapture.tsx, index.module.scss
+src/pages/popup/Popup.tsx, index.module.scss
+src/pages/options/Options.tsx
+src/pages/options/components/Connect.tsx, ClipNote.tsx
+src/pages/background/index.ts, upgrade.ts, utils.test.ts
+src/pages/logseq/client.ts, httpServerClient.ts
+src/components/logseq.module.scss
+```
+
+**Last Commit**: "Rename project from Logseq Copilot to Logseq DB Sidekick" (b20d2fb)
 
 ---
 
-### Phase 2: Exclude Journal Pages Setting
-**Status**: Not Started
+### Phase 1: Exclude Journal Pages Setting
+**Status**: 🔜 Next Priority
 **Goal**: Add user setting to filter out journal pages from search results
 **Approach**: POC first, then integrate
 
@@ -76,11 +95,11 @@ git push --tags
 - Check `block.page['journal?']` or similar property
 - Filter in `searchGraph()` method before rendering blocks
 
-**Version**: Will be 0.0.8
+**Version**: Will be 0.0.9
 
 ---
 
-### Phase 3: Floating Button UX (Major Change)
+### Phase 2: Floating Button UX (Major Change)
 **Status**: Not Started
 **Goal**: Replace permanent sidebar with floating button showing result count
 **Reference**: Unpaywall extension - https://github.com/ourresearch/unpaywall-extension
@@ -125,7 +144,7 @@ git push --tags
 
 ---
 
-### Phase 4: macOS Background Helper App
+### Phase 3: macOS Background Helper App
 **Status**: Not Started
 **Goal**: Make HTTP server run automatically in background on macOS
 **Approach**: POC first, then integrate
@@ -265,8 +284,9 @@ Firefox: about:debugging → Load Temporary Add-on → build/firefox/manifest.js
 - **v0.0.1**: Initial fork with HTTP server integration
 - **v0.0.2**: Fixed search using datalog queries
 - **v0.0.3-6**: Debugging EDN parsing and data transformation
-- **v0.0.7**: **CURRENT** - Working search with proper DB graph support
-- **v0.0.8**: (Planned) Journal page filtering
+- **v0.0.7**: Working search with proper DB graph support
+- **v0.0.8**: **CURRENT** - Project renamed to "Logseq DB Sidekick", GitHub repo set up
+- **v0.0.9**: (Planned) Journal page filtering
 - **v0.1.0**: (Planned) Floating button UX
 - **v0.2.0**: (Planned) macOS background helper app
 
@@ -385,18 +405,37 @@ git push --tags
 
 ## Notes for Future Chat Sessions
 
-If continuing in a new chat:
-1. Read this TODO.md first
-2. Check "Current Sprint" section for active phase
-3. Review "Key Architecture & Files Reference" for context
-4. Check version history to see what's been implemented
-5. Run test checklist to verify current state
-6. Update TODO.md after each phase completion
+### If Continuing Tomorrow (2025-11-11 or later)
+
+**What Was Just Completed** (2025-11-10 evening session):
+- ✅ Complete project rename: "Logseq Copilot" → "Logseq DB Sidekick"
+- ✅ All source code, types, functions, CSS classes renamed
+- ✅ New README.md with proper attribution to original creator
+- ✅ GitHub repository renamed and updated
+- ✅ Version bumped to 0.0.8
+- ✅ All tests passing
+
+**Next Task to Work On**:
+👉 **Phase 1: Exclude Journal Pages Setting** (see Phase 1 section above)
+
+**Starting Fresh in a New Chat**:
+1. ✅ Read this TODO.md first (you're doing it!)
+2. Check current version: `cat package.json | grep version` → should be 0.0.8
+3. Verify git status: `git log --oneline -5` → last commit should be "Rename project..."
+4. Review "Phase 1: Exclude Journal Pages Setting" above for next tasks
+5. Create POC first, test, then integrate (follow POC Development Guidelines)
 
 **Quick Status Check**:
 ```bash
 cd /Users/niyaro/Documents/Code/logseq-copilot-http
-cat package.json | grep version  # Current version
-git log --oneline -5              # Recent commits
-git status                        # Working directory status
+cat package.json | grep version  # Should show 0.0.8
+git log --oneline -3              # Should see rename commit
+git remote -v                     # Should show logseq-db-sidekick repo
 ```
+
+**Important Context**:
+- Project is now cleanly renamed and properly attributed
+- Extension works with HTTP server at http://localhost:8765
+- Only supports DB graphs (not file-based graphs)
+- Search-only focus (no editing/capture features)
+- All old "copilot" references have been removed
