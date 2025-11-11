@@ -133,21 +133,21 @@ export default class HttpServerClient implements LogseqClientInterface {
       if (resp.data) {
         console.log('[HTTP Server Client] Search data:', resp.data);
 
-        // resp.data is an array of blocks from datalog query:
-        // [{block/uuid: "...", block/title: "...", block/page: {db/id, block/uuid, block/title, block/name}}]
-        const blocks = Array.isArray(resp.data) ? resp.data : [];
+        // resp.data is now an array of PAGES from datalog query:
+        // [{db/id: X, block/uuid: "...", block/name: "...", block/title: "..."}]
+        const pages = Array.isArray(resp.data) ? resp.data : [];
 
         // Transform to LogseqSearchResponse format matching LogseqBlockType interface
+        // Each page becomes a "block" that represents the page itself
         const transformed = {
-          blocks: blocks.map((block: any) => {
-            const page = block['block/page'] || {};
+          blocks: pages.map((page: any) => {
             const transformedBlock = {
-              uuid: block['block/uuid'] || block.uuid || '',
-              content: block['block/title'] || '', // DB graphs use title
+              uuid: page['block/uuid'] || page.uuid || '',
+              content: page['block/title'] || '', // Use page title as content
               page: {
                 id: page['db/id'] || 0,
                 uuid: page['block/uuid'] || '',
-                name: page['block/title'] || page['block/name'] || 'Unknown Page',
+                name: page['block/title'] || page['block/name'] || 'Unknown Page', // Display actual title
                 originalName: page['block/name'] || '',
                 'journal-day': page['block/journal-day'], // For filtering journal pages
               },
@@ -156,7 +156,7 @@ export default class HttpServerClient implements LogseqClientInterface {
               marker: '',
               priority: '',
             };
-            console.log('[HTTP Server Client] Transformed block:', JSON.stringify(transformedBlock, null, 2));
+            console.log('[HTTP Server Client] Transformed page:', JSON.stringify(transformedBlock, null, 2));
             return transformedBlock;
           }),
           'pages-content': [],

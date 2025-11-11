@@ -1,7 +1,7 @@
 # Logseq DB Sidekick - Development TODO
 
-**Last Updated**: 2025-11-11
-**Current Version**: 0.0.9
+**Last Updated**: 2025-11-11 (Night)
+**Current Version**: 0.0.15
 **Project Location**: `/Users/niyaro/Documents/Code/logseq-copilot-http`
 **HTTP Server Location**: `/Users/niyaro/Documents/Code/logseq-http-server`
 **GitHub Repo**: https://github.com/kerim/logseq-db-sidekick
@@ -18,7 +18,13 @@ Browser extension that displays relevant Logseq search results while browsing th
 
 ---
 
-## Current Sprint: UX & Infrastructure Improvements
+## Completed Sprints & Current Focus
+
+### ✅ Sprint 1: Core Functionality (Completed)
+Phases 0, 1, and 2 - Project setup, page search, and UI fixes
+
+### 🔜 Sprint 2: Enhanced UX (Next)
+Phase 3: Floating Button - Replace permanent sidebar with collapsible floating button
 
 ### Phase 0: Project Renaming & GitHub Setup ✅ COMPLETED
 **Status**: ✅ Completed on 2025-11-10
@@ -68,50 +74,85 @@ src/components/logseq.module.scss
 
 ---
 
-### Phase 1: Exclude Journal Pages Setting ✅ COMPLETED
+### Phase 1: Change Search from Blocks to Pages ✅ COMPLETED
 **Status**: ✅ Completed on 2025-11-11
-**Goal**: Add user setting to filter out journal pages from search results
-**Approach**: POC first, then integrate
+**Goal**: Change default search behavior from searching block content to searching page names
+**Approach**: Direct implementation with iterative testing
 
-#### POC Tasks:
-- ✅ Created test script to identify journal pages in Logseq data
-- ✅ Tested filtering logic with sample data
-- ✅ Verified journal page detection works with DB graphs
+#### What Changed:
+- **Before**: Searched for blocks containing the query text (e.g., any note mentioning "taiwan")
+- **After**: Searches for pages with the query in their name/title (e.g., page named "Taiwan")
 
-#### Integration Tasks:
-- ✅ Added setting to extension options page (new `SearchSettings.tsx` component)
-- ✅ Stored setting in extension storage (`src/config.ts`)
-- ✅ Modified search filtering in `httpServerService.ts`
-- ✅ Added console logging to show filter count
+#### Key Discovery:
+- User wanted to find **pages** (like "Taiwan Business Bank"), not individual blocks
+- Journal filtering was a misunderstanding of the real issue
+- Logseq DB stores both `block/name` (lowercase) and `block/title` (original caps)
 
-**Key Discovery**:
-- Journal pages in DB graphs use `:block/journal-day` property (NOT `:block/journal?`)
-- Property value is integer in YYYYMMDD format (e.g., 20250606)
-- Regular pages do not have this property (undefined)
+#### Implementation:
+**HTTP Server Changes** (`logseq_server.py`):
+- Changed datalog query from searching `:block/title` of blocks
+- To searching `:block/name` OR `:block/title` of pages
+- Case-insensitive: searches both lowercase name and original title
+- Query: `(or [(clojure.string/includes? ?name "query")] [(clojure.string/includes? ?title "Query")])`
 
-**Files Modified**:
-- HTTP Server: `logseq_server.py` - Updated datalog query to include `:block/journal-day`
-- Extension:
-  - `src/types/logseqBlock.ts` - Added `'journal-day'?: number` to LogseqPageIdenity
-  - `src/config.ts` - Added `excludeJournalPages: boolean` setting
-  - `src/pages/logseq/httpServerClient.ts` - Pass journal-day in transformation
-  - `src/pages/logseq/httpServerService.ts` - Filtering logic with console logging
-  - `src/pages/options/components/SearchSettings.tsx` - New UI component
-  - `src/pages/options/Options.tsx` - Added SearchSettings component
-  - POC files in `poc/journal-filter/`
+**Extension Changes**:
+- `src/pages/logseq/httpServerClient.ts` - Transform pages (not blocks) to display format
+- `src/pages/logseq/httpServerService.ts` - Removed journal filtering logic, simplified
+- Display uses `block/title` (proper capitalization) not `block/name` (lowercase)
 
 **Test Results**:
-- Test query "sifo" returns 6 blocks total
-- 5 are from journal pages, 1 from regular page
-- With filter enabled: Shows only 1 result (83% reduction)
-- Console shows: "Showing 1 results (5 journal pages hidden)"
+- Query "taiwan" (lowercase) returns 22 pages
+- Query "Taiwan" (capital T) returns same 22 pages
+- All pages show proper capitalization (e.g., "Taiwan Business Bank")
+- Case-insensitive search confirmed working
 
-**Version**: 0.0.9
+**Versions**: 0.0.9 → 0.0.13 (multiple iterations for testing)
 
 ---
 
-### Phase 2: Floating Button UX (Major Change)
-**Status**: Not Started
+### Phase 2: Fix UI Display and Navigation ✅ COMPLETED
+**Status**: ✅ Completed on 2025-11-11 (Night)
+**Goal**: Fix search results display and page navigation issues
+**Started**: 2025-11-11 (Evening)
+
+#### Problem Identified:
+User reported that clicking page title headers opened Logseq but not to the correct page, while "To Block" links worked correctly. UI also showed duplicate text and redundant "To Block" links.
+
+#### Root Cause:
+1. **Wrong URL Format**: Header links used `?page=${name}` format, which doesn't work reliably
+2. **Duplicate Content**: `renderBlock()` was being called on page results, creating duplicate text below headers
+3. **Redundant UI**: "To Block" link was unnecessary when showing page results
+
+#### Solution Implemented (v0.0.15):
+**Files Modified:**
+1. **src/components/LogseqPage.tsx** (line 24)
+   - Changed from: `?page=${page?.originalName || page?.name}`
+   - Changed to: `?block-id=${page.uuid}`
+   - Now uses same URL format as working "To Block" links
+
+2. **src/pages/logseq/httpServerService.ts** (lines 37-39)
+   - Stopped calling `renderBlock()` on page results
+   - Returns pages directly without HTML rendering
+   - Eliminates duplicate text generation
+
+3. **src/components/LogseqBlock.tsx** (lines 153-160)
+   - Added fallback rendering for pages without html content
+   - Shows only the clickable page header link
+   - No duplicate text, no "To Block" link for page results
+
+#### Result:
+- ✅ Clean list of clickable page titles
+- ✅ All page links open Logseq to correct page
+- ✅ No duplicate text below headers
+- ✅ No redundant "To Block" links
+- ✅ User verified: "works great"
+
+**Version**: 0.0.15
+
+---
+
+### Phase 3: Floating Button UX (Major Change)
+**Status**: Not Started (Future)
 **Goal**: Replace permanent sidebar with floating button showing result count
 **Reference**: Unpaywall extension - https://github.com/ourresearch/unpaywall-extension
 **Approach**: POC first, then integrate
@@ -155,8 +196,8 @@ src/components/logseq.module.scss
 
 ---
 
-### Phase 3: macOS Background Helper App
-**Status**: Not Started
+### Phase 4: macOS Background Helper App
+**Status**: Not Started (Future)
 **Goal**: Make HTTP server run automatically in background on macOS
 **Approach**: POC first, then integrate
 
@@ -297,7 +338,13 @@ Firefox: about:debugging → Load Temporary Add-on → build/firefox/manifest.js
 - **v0.0.3-6**: Debugging EDN parsing and data transformation
 - **v0.0.7**: Working search with proper DB graph support
 - **v0.0.8**: Project renamed to "Logseq DB Sidekick", GitHub repo set up
-- **v0.0.9**: **CURRENT** - Journal page filtering with user setting
+- **v0.0.9**: Journal page filtering (reverted - wrong approach)
+- **v0.0.10**: Changed search from blocks to pages
+- **v0.0.11**: Added case-insensitive page search (OR query)
+- **v0.0.12**: Testing display of lowercase vs title (reverted)
+- **v0.0.13**: Page search with proper title display
+- **v0.0.14**: Attempted fix for broken page links (did not resolve - issue more complex)
+- **v0.0.15**: **CURRENT** - Fixed page links to use block-id format, removed duplicate UI elements
 - **v0.1.0**: (Planned) Floating button UX
 - **v0.2.0**: (Planned) macOS background helper app
 
@@ -416,37 +463,44 @@ git push --tags
 
 ## Notes for Future Chat Sessions
 
-### If Continuing Tomorrow (2025-11-11 or later)
+### If Continuing Tomorrow (2025-11-12 or later)
 
-**What Was Just Completed** (2025-11-10 evening session):
-- ✅ Complete project rename: "Logseq Copilot" → "Logseq DB Sidekick"
-- ✅ All source code, types, functions, CSS classes renamed
-- ✅ New README.md with proper attribution to original creator
-- ✅ GitHub repository renamed and updated
-- ✅ Version bumped to 0.0.8
-- ✅ All tests passing
+**What Was Just Completed** (2025-11-11 night session):
+- ✅ **Phase 2 Complete**: Fixed UI display and page navigation
+- ✅ Changed page links to use `?block-id=${uuid}` format (works correctly)
+- ✅ Removed duplicate content display below headers
+- ✅ Removed redundant "To Block" links for page results
+- ✅ Clean, minimal UI showing just clickable page titles
+- ✅ Version bumped to 0.0.15
+- ✅ User tested and verified: "works great"
 
 **Next Task to Work On**:
-👉 **Phase 1: Exclude Journal Pages Setting** (see Phase 1 section above)
+👉 **Phase 3: Floating Button UX** (see Phase 3 section above)
+
+This is a MAJOR UX change - replacing the permanent sidebar with a collapsible floating button (like Unpaywall extension). Follow POC-first approach:
+1. Study Unpaywall extension code
+2. Create standalone POC in `poc/floating-button/`
+3. Test thoroughly before integrating
+4. Will be version 0.1.0 (major UX change)
 
 **Starting Fresh in a New Chat**:
 1. ✅ Read this TODO.md first (you're doing it!)
-2. Check current version: `cat package.json | grep version` → should be 0.0.8
-3. Verify git status: `git log --oneline -5` → last commit should be "Rename project..."
-4. Review "Phase 1: Exclude Journal Pages Setting" above for next tasks
-5. Create POC first, test, then integrate (follow POC Development Guidelines)
+2. Check current version: `cat package.json | grep version` → should be 0.0.15
+3. Verify git status: `git log --oneline -5` → last commit should be "Fix page navigation..."
+4. Review "Phase 3: Floating Button UX" above for next tasks
+5. **Remember**: POC first, then integrate (follow POC Development Guidelines)
 
 **Quick Status Check**:
 ```bash
 cd /Users/niyaro/Documents/Code/logseq-copilot-http
-cat package.json | grep version  # Should show 0.0.8
-git log --oneline -3              # Should see rename commit
+cat package.json | grep version  # Should show 0.0.15
+git log --oneline -3              # Should see navigation fix commit
 git remote -v                     # Should show logseq-db-sidekick repo
 ```
 
 **Important Context**:
-- Project is now cleanly renamed and properly attributed
+- **Core functionality is now solid**: Project renamed, page search working, UI clean and functional
 - Extension works with HTTP server at http://localhost:8765
 - Only supports DB graphs (not file-based graphs)
 - Search-only focus (no editing/capture features)
-- All old "copilot" references have been removed
+- Ready for major UX enhancement (floating button)

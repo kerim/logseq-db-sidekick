@@ -149,5 +149,13 @@ export const LogseqBlock = ({ graph, blocks }: LogseqBlockProps) => {
       </div>
     );
   }
-  return <></>;
+
+  // For page results (no html content), just show the page link
+  return (
+    <div className={styles.block}>
+      <div className={styles.blockHeader}>
+        <LogseqPageLink graph={graph} page={block.page}></LogseqPageLink>
+      </div>
+    </div>
+  );
 };

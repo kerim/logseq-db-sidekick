@@ -21,10 +21,10 @@ const LogseqPageLink = ({
     <>
       <a
         className={styles.logseqPageLink}
-        href={`logseq://graph/${graph}?page=${page?.name}`}
+        href={`logseq://graph/${graph}?block-id=${page.uuid}`}
       >
         <span className="tie tie-page"></span>
-        {page?.originalName || page?.title}
+        {page?.name}
       </a>
     </>
   );
