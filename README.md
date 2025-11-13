@@ -34,6 +34,10 @@ This fork differs from the original Logseq Copilot in several key ways:
 - 📊 Full-text search across all block content
 - 🔗 Direct links to open blocks in Logseq Desktop
 
+## TODO
+
+- [ ] **Search Bar Functionality**: Implement direct search within the extension UI. Currently, users can only see results when searching on supported search engines - a dedicated search bar in the extension popup would allow direct queries without needing to visit search engines first.
+
 ## Installation
 
 ### HTTP Server Setup (Required First)
