@@ -24,10 +24,17 @@
 
 .logseqPageLink {
   @apply no-underline hover:underline;
+  color: var(--lx-link, #0f766e);
+  font-weight: 500;
+
+  &:hover {
+    color: var(--lx-link-hover, #115e59);
+  }
 }
 
 .pages {
-  @apply grid grid-cols-3 gap-2 p-1 bg-[#8080801a] rounded-lg relative max-h-52 overflow-auto;
+  @apply flex flex-col gap-2 p-1 rounded-lg relative;
+  background: var(--lx-bg-secondary, #f9fafb);
 }
 
 .pages::before {
@@ -37,23 +44,46 @@
 }
 
 :root {
-  --cardShadow: color-mix(in srgb, black 30%, transparent) 0 1px 2px 0,
-    color-mix(in srgb, black 15%, transparent) 0 1px 3px 1px;
+  --cardShadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --cardBG: var(--lx-bg-secondary, #f9fafb);
+  --markerStatusHoverColor: var(--lx-text-primary, #1f2937);
+  --markerCheckerBGColor: var(--lx-border, #e5e7eb);
+}
 
-  --cardBG: rgba(210, 210, 210, 0.2);
-  --markerStatusHoverColor: black;
-  --markerCheckerBGColor: rgba(175, 175, 175, 0.799);
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cardShadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --cardBG: var(--lx-bg-secondary, #073642);
+    --markerStatusHoverColor: var(--lx-text-primary, #e5e7eb);
+    --markerCheckerBGColor: var(--lx-border, #1e5766);
+  }
+}
 
-  // @media (prefers-color-scheme: dark) {
-  //   --cardBG: #292a2d;
-  //   --markerStatusHoverColor: white;
-  // }
+[data-theme="dark"] {
+  --cardShadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --cardBG: var(--lx-bg-secondary, #073642);
+  --markerStatusHoverColor: var(--lx-text-primary, #e5e7eb);
+  --markerCheckerBGColor: var(--lx-border, #1e5766);
+}
+
+[data-theme="light"] {
+  --cardShadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --cardBG: var(--lx-bg-secondary, #f9fafb);
+  --markerStatusHoverColor: var(--lx-text-primary, #1f2937);
+  --markerCheckerBGColor: var(--lx-border, #e5e7eb);
 }
 
 .page {
   @apply rounded-lg p-2 whitespace-break-spaces overflow-hidden text-ellipsis break-normal;
-  background-color: var(--cardBG);
-  box-shadow: var(--cardShadow);
+  background-color: var(--lx-bg-secondary, #f9fafb);
+  border-left: 3px solid var(--lx-accent, #85c8c8);
+  box-shadow: 0 1px 3px var(--lx-shadow, rgba(0, 0, 0, 0.1));
+  transition: all 0.2s ease;
+}
+
+.page:hover {
+  background-color: var(--lx-bg-tertiary, #f3f4f6);
+  border-left-color: var(--lx-accent-hover, #6eb5b5);
 }
 
 .blocks {
@@ -62,8 +92,15 @@
 
 .block {
   @apply p-2 rounded-lg;
-  background-color: var(--cardBG);
-  box-shadow: var(--cardShadow);
+  background-color: var(--lx-bg-secondary, #f9fafb);
+  border-left: 3px solid var(--lx-accent, #85c8c8);
+  box-shadow: 0 1px 3px var(--lx-shadow, rgba(0, 0, 0, 0.1));
+  transition: all 0.2s ease;
+}
+
+.block:hover {
+  background-color: var(--lx-bg-tertiary, #f3f4f6);
+  border-left-color: var(--lx-accent-hover, #6eb5b5);
 }
 
 .blockBody {
@@ -71,7 +108,8 @@
 }
 
 .blockHeader {
-  @apply w-full justify-between flex flex-row gap-2 border-0 border-b-[1px] border-solid border-[#6666664d] pb-1;
+  @apply w-full justify-between flex flex-row gap-2 border-0 border-b-[1px] border-solid pb-1;
+  border-color: var(--lx-border, #e5e7eb);
 }
 
 .blockContentList {
@@ -88,7 +126,7 @@
 }
 
 .blockContentListItem:hover {
-  background-color: hsl(0deg 0% 40% / 30%);
+  background-color: var(--lx-bg-tertiary, #f3f4f6);
 }
 
 .blockContentRoot {

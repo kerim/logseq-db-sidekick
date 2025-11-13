@@ -7,7 +7,6 @@ import {
   Divider,
 } from '@chakra-ui/react';
 import { LogseqConnectOptions } from './components/Connect';
-import { ClipNoteOptions } from './components/ClipNote';
 import { SearchSettings } from './components/SearchSettings';
 import styles from './Options.module.scss';
 
@@ -31,10 +30,6 @@ const Options = () => {
           <Divider />
 
           <SearchSettings />
-
-          <Divider />
-
-          <ClipNoteOptions />
         </Flex>
       </Flex>
     </Container>

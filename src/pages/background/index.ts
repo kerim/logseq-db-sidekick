@@ -8,6 +8,24 @@ import {getLogseqService} from '@pages/logseq/tool';
 
 console.log('[Logseq DB Sidekick] Background script loaded');
 
+// Listen for storage changes and invalidate cache when config is updated
+browser.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName === 'local') {
+    // Check if any config values changed (graphName, hostname, or port)
+    if (changes.graphName || changes.logseqHostName || changes.logseqPort) {
+      console.log('[Logseq DB Sidekick] Config changed, clearing HTTP client cache');
+      console.log('[Logseq DB Sidekick] Changed keys:', Object.keys(changes));
+
+      // Clear the cache so next search will reload config
+      getLogseqService().then((service) => {
+        service.client.clearCache();
+      }).catch((err) => {
+        console.error('[Logseq DB Sidekick] Failed to clear cache:', err);
+      });
+    }
+  }
+});
+
 browser.runtime.onConnect.addListener((port) => {
   console.log('[Logseq DB Sidekick] Port connected:', port);
   port.onMessage.addListener((msg) => {
@@ -59,7 +77,10 @@ browser.runtime.onConnect.addListener((port) => {
 });
 
 browser.runtime.onMessage.addListener((msg, sender) => {
+  console.log('[Logseq DB Sidekick] Runtime message received:', msg);
+
   if (msg.type === 'open-options') {
+    console.log('[Logseq DB Sidekick] Opening options page...');
     browser.runtime.openOptionsPage();
   } else if (msg.type === 'clip-with-selection') {
     quickCapture(msg.data);

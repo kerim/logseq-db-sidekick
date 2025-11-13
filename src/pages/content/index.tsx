@@ -1,9 +1,7 @@
-import { getLogseqSidekickConfig } from '@/config';
 import { fixDuckDuckGoDark } from '@/utils';
 import { createRoot } from 'react-dom/client';
 import Browser from 'webextension-polyfill';
 import { LogseqSidekickComponent } from './LogseqSidekick';
-import mountQuickCapture from './QuickCapture';
 import searchEngines, {
   Baidu,
   Bing,
@@ -63,16 +61,34 @@ function getEngine() {
   }
 }
 
-const searchEngine = getEngine();
+// Run plugin after page is interactive to avoid blocking search results
+const initPlugin = () => {
+  const searchEngine = getEngine();
 
-if (searchEngine) {
-  setTimeout(() => run(searchEngine), 200);
-  if (searchEngine.reload) {
-    searchEngine.reload(() => run(searchEngine));
+  if (searchEngine) {
+    // Use requestIdleCallback if available, otherwise setTimeout
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => {
+        run(searchEngine);
+        if (searchEngine.reload) {
+          searchEngine.reload(() => run(searchEngine));
+        }
+      }, { timeout: 2000 });
+    } else {
+      setTimeout(() => {
+        run(searchEngine);
+        if (searchEngine.reload) {
+          searchEngine.reload(() => run(searchEngine));
+        }
+      }, 200);
+    }
   }
-}
+};
 
-getLogseqSidekickConfig().then(({ enableClipNoteFloatButton }) => {
-  if (!enableClipNoteFloatButton) return;
-  mountQuickCapture();
-});
+// Wait for page to be interactive before initializing
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initPlugin);
+} else {
+  // DOM already loaded
+  initPlugin();
+}

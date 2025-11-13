@@ -2,7 +2,9 @@ import {
   Heading,
   Grid,
   Text,
-  Checkbox,
+  RadioGroup,
+  Stack,
+  Radio,
 } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 
@@ -21,29 +23,35 @@ export const SearchSettings = () => {
     });
   }, []);
 
-  const handleExcludeJournalChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.checked;
+  const handleThemeChange = async (value: string) => {
+    const newValue = value as 'auto' | 'light' | 'dark';
     setLogseqConfig({
       ...logseqConfig,
-      excludeJournalPages: newValue,
+      theme: newValue,
     });
-    await saveLogseqSidekickConfig({ excludeJournalPages: newValue });
+    await saveLogseqSidekickConfig({ theme: newValue });
   };
 
   return (
     <>
-      <Heading size={'lg'}>Search Settings</Heading>
-      <Grid gridTemplateColumns={'1fr'} rowGap={2}>
-        <Checkbox
-          isChecked={logseqConfig?.excludeJournalPages || false}
-          onChange={handleExcludeJournalChange}
-        >
-          Exclude journal pages from search results
-        </Checkbox>
-        <Text fontSize="xs" color="gray.600" ml={6}>
-          When enabled, search results from daily journal pages will be hidden.
-          This can significantly reduce clutter when searching.
-        </Text>
+      <Heading size={'lg'}>Display Settings</Heading>
+      <Grid gridTemplateColumns={'200px 1fr'} rowGap={4} alignItems={'start'}>
+        <Text fontSize="md" mt={2}>Theme</Text>
+        <div>
+          <RadioGroup
+            value={logseqConfig?.theme || 'auto'}
+            onChange={handleThemeChange}
+          >
+            <Stack spacing={3} direction="column">
+              <Radio value="auto">Auto (follow system)</Radio>
+              <Radio value="light">Light</Radio>
+              <Radio value="dark">Dark</Radio>
+            </Stack>
+          </RadioGroup>
+          <Text fontSize="xs" color="gray.600" mt={2}>
+            Choose your preferred color theme. Auto mode matches your browser's system preference.
+          </Text>
+        </div>
       </Grid>
     </>
   );

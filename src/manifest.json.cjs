@@ -39,6 +39,7 @@ const build = (releaseFor) => {
         matches: ['http://*/*', 'https://*/*', '<all_urls>'],
         js: ['content-script.js'],
         css: ['content-script.css'],
+        run_at: 'document_idle', // Run after page loads to avoid blocking
       },
     ],
     action: {

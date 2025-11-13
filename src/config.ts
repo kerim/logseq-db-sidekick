@@ -7,15 +7,14 @@ export type LogseqSidekickConfig = {
   logseqPort: number;
   logseqAuthToken: string;
   graphName: string;
-  enableClipNoteFloatButton: boolean;
-  clipNoteLocation: string;
-  clipNoteCustomPage: string;
-  clipNoteTemplate: string;
-  excludeJournalPages: boolean; // Filter out journal pages from search results
+  theme: 'auto' | 'light' | 'dark'; // Theme preference
 };
 
 export const getLogseqSidekickConfig =
   async (): Promise<LogseqSidekickConfig> => {
+    const stored = await Browser.storage.local.get();
+    console.log('[Config] Raw storage contents:', stored);
+
     const {
       version = '',
       logseqHost = 'http://localhost:8765',
@@ -23,26 +22,21 @@ export const getLogseqSidekickConfig =
       logseqPort = 8765,
       logseqAuthToken = '',
       graphName = '',
-      enableClipNoteFloatButton = false,
-      clipNoteLocation = "journal",
-      clipNoteCustomPage = "",
-      clipNoteTemplate = `#[[Clip]] [{{title}}]({{url}})
-{{content}}`,
-      excludeJournalPages = false,
-    } = await Browser.storage.local.get();
-    return {
+      theme = 'auto',
+    } = stored;
+
+    const config = {
       version,
       logseqHost,
       logseqHostName,
       logseqPort,
       logseqAuthToken,
       graphName,
-      enableClipNoteFloatButton,
-      clipNoteLocation,
-      clipNoteCustomPage,
-      clipNoteTemplate,
-      excludeJournalPages,
+      theme,
     };
+
+    console.log('[Config] Loaded config:', config);
+    return config;
   };
 
 export const saveLogseqSidekickConfig = async (

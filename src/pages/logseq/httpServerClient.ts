@@ -47,10 +47,27 @@ export default class HttpServerClient implements LogseqClientInterface {
   private async getConfig() {
     if (!this.serverUrl) {
       const config = await getLogseqSidekickConfig();
-      this.serverUrl = config.logseqHost || 'http://localhost:8765';
+      console.log('[HTTP Server Client] Full config:', JSON.stringify(config, null, 2));
+      // Construct serverUrl from logseqHostName and logseqPort
+      // (logseqHost was removed by upgrade script)
+      const hostname = config.logseqHostName || 'localhost';
+      const port = config.logseqPort || 8765;
+      this.serverUrl = `http://${hostname}:${port}`;
       this.graphName = config.graphName || '';
+      console.log('[HTTP Server Client] Constructed serverUrl:', this.serverUrl);
+      console.log('[HTTP Server Client] Graph name:', this.graphName);
     }
     return { serverUrl: this.serverUrl, graphName: this.graphName };
+  }
+
+  /**
+   * Clear cached config values to force reload from storage on next access.
+   * Called when settings are updated.
+   */
+  public clearCache() {
+    console.log('[HTTP Server Client] Cache cleared - will reload config on next request');
+    this.serverUrl = '';
+    this.graphName = '';
   }
 
   private async httpFetch(endpoint: string, options?: RequestInit): Promise<HttpServerResponse> {
@@ -94,24 +111,20 @@ export default class HttpServerClient implements LogseqClientInterface {
   }
 
   public async getGraph(): Promise<Graph> {
-    return await this.catchIssues(async () => {
-      const { graphName } = await this.getConfig();
-      // Get graph info using the show endpoint
-      const resp = await this.httpFetch(`/show?graph=${encodeURIComponent(graphName)}`);
+    // Simply return the graph name from config without calling /show
+    // The /show endpoint may not exist on all HTTP server implementations
+    const { graphName } = await this.getConfig();
 
-      if (resp.success && resp.data) {
-        return {
-          name: graphName,
-          path: resp.data.path || '',
-        };
-      }
+    if (!graphName) {
+      console.error('[HTTP Server Client] Graph name is empty in config');
+      throw new Error('Graph name not configured. Please set it in extension options.');
+    }
 
-      // Fallback if data not available
-      return {
-        name: graphName,
-        path: '',
-      };
-    }) as Promise<Graph>;
+    console.log('[HTTP Server Client] Using graph name from config:', graphName);
+    return {
+      name: graphName,
+      path: '',
+    };
   }
 
   public async search(query: string): Promise<LogseqSearchResponse> {

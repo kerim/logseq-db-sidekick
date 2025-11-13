@@ -8,7 +8,18 @@ export default class HttpServerService implements LogseqServiceInterface {
 
   public async getGraph() {
     const graph = await this.client.getGraph();
-    return graph.name.replace('logseq_db_', '');
+    console.log('[HTTP Server Service] Got graph:', graph);
+
+    // Check if getGraph returned a valid graph object
+    if (!graph || typeof graph !== 'object' || !graph.name) {
+      console.error('[HTTP Server Service] Invalid graph object:', graph);
+      throw new Error('Cannot get graph name from HTTP server');
+    }
+
+    // Remove logseq_db_ prefix if present
+    const cleanName = graph.name.replace('logseq_db_', '');
+    console.log('[HTTP Server Service] Clean graph name:', cleanName);
+    return cleanName;
   }
 
   public async showMsg(message: string) {
@@ -29,14 +40,19 @@ export default class HttpServerService implements LogseqServiceInterface {
       graph: graphName,
     };
 
-    // Use pages directly from search response - server now returns pages, not blocks
-    if (resp.blocks) {
-      response.blocks = resp.blocks
-        .filter((item: any) => !item['page?'])
-        .map((item: any) => {
-          // Return page results without rendering - just show page links
-          return item;
-        });
+    // The HTTP server returns page search results in resp.blocks
+    // We need to put them in the pages array for proper display
+    if (resp.blocks && resp.blocks.length > 0) {
+      console.log('[HTTP Server Service] Got', resp.blocks.length, 'page results');
+      response.pages = resp.blocks.map((item: any) => {
+        // These are page results - transform to page format
+        return {
+          uuid: item.uuid,
+          name: item.page?.name || item.content || 'Unknown',
+          title: item.content || item.page?.name || 'Unknown',
+        };
+      });
+      response.count = response.pages.length;
     }
 
     return response;

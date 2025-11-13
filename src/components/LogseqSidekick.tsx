@@ -42,7 +42,7 @@ const LogseqSidekick = ({ graph, pages, blocks }) => {
       return <></>;
     }
     return <div className={styles.pages}>
-      {pages.slice(0, 9).map((page) => {
+      {pages.map((page) => {
         if (!page) return <></>;
         return (
           <div key={page.name} className={styles.page}>

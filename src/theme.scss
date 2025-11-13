@@ -1,0 +1,75 @@
+/* Logseq-inspired Color Variables */
+:root {
+  /* Light mode - Logseq colors */
+  --lx-accent: #85c8c8;
+  --lx-accent-hover: #6eb5b5;
+  --lx-accent-active: #5aa3a3;
+  --lx-bg-base: #ffffff;
+  --lx-bg-secondary: #f9fafb;
+  --lx-bg-tertiary: #f3f4f6;
+  --lx-text-primary: #1f2937;
+  --lx-text-secondary: #6b7280;
+  --lx-link: #0f766e; /* Dark teal/green for links */
+  --lx-link-hover: #115e59; /* Even darker on hover */
+  --lx-border: #e5e7eb;
+  --lx-shadow: rgba(0, 0, 0, 0.1);
+  --lx-overlay: rgba(0, 0, 0, 0.5);
+}
+
+/* Dark mode - Logseq dark theme colors */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --lx-accent: #85c8c8;
+    --lx-accent-hover: #9fd6d6;
+    --lx-accent-active: #6eb5b5;
+    --lx-bg-base: #002b36;
+    --lx-bg-secondary: #073642;
+    --lx-bg-tertiary: #0e4956;
+    --lx-text-primary: #e5e7eb;
+    --lx-text-secondary: #9ca3af;
+    --lx-link: #5eead4; /* Bright teal for links in dark mode */
+    --lx-link-hover: #99f6e4; /* Lighter on hover */
+    --lx-border: #1e5766;
+    --lx-shadow: rgba(0, 0, 0, 0.3);
+    --lx-overlay: rgba(0, 0, 0, 0.7);
+  }
+}
+
+/* Manual dark mode override */
+[data-theme="dark"] {
+  --lx-accent: #85c8c8;
+  --lx-accent-hover: #9fd6d6;
+  --lx-accent-active: #6eb5b5;
+  --lx-bg-base: #002b36;
+  --lx-bg-secondary: #073642;
+  --lx-bg-tertiary: #0e4956;
+  --lx-text-primary: #e5e7eb;
+  --lx-text-secondary: #9ca3af;
+  --lx-link: #5eead4; /* Bright teal for links in dark mode */
+  --lx-link-hover: #99f6e4; /* Lighter on hover */
+  --lx-border: #1e5766;
+  --lx-shadow: rgba(0, 0, 0, 0.3);
+  --lx-overlay: rgba(0, 0, 0, 0.7);
+}
+
+/* Manual light mode override */
+[data-theme="light"] {
+  --lx-accent: #85c8c8;
+  --lx-accent-hover: #6eb5b5;
+  --lx-accent-active: #5aa3a3;
+  --lx-bg-base: #ffffff;
+  --lx-bg-secondary: #f9fafb;
+  --lx-bg-tertiary: #f3f4f6;
+  --lx-text-primary: #1f2937;
+  --lx-text-secondary: #6b7280;
+  --lx-link: #0f766e; /* Dark teal/green for links */
+  --lx-link-hover: #115e59; /* Even darker on hover */
+  --lx-border: #e5e7eb;
+  --lx-shadow: rgba(0, 0, 0, 0.1);
+  --lx-overlay: rgba(0, 0, 0, 0.5);
+}
+
+/* Smooth transitions for theme changes */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}

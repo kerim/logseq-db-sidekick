@@ -1,0 +1,213 @@
+/* Overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--lx-overlay, rgba(0, 0, 0, 0.5));
+  z-index: 9998;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  pointer-events: all; /* Re-enable pointer events */
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/* Side Panel */
+.sidePanel {
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  width: 400px;
+  background: var(--lx-bg-base, #ffffff);
+  box-shadow: -4px 0 16px var(--lx-shadow, rgba(0, 0, 0, 0.1));
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.3s ease, background-color 0.3s ease;
+  pointer-events: all; /* Re-enable pointer events */
+
+  /* Prevent scroll propagation */
+  overscroll-behavior: contain;
+
+  /* Floating mode - slides from right */
+  &.floating {
+    right: -400px;
+
+    &.open {
+      right: 0;
+    }
+  }
+
+  /* Sidebar mode - always visible, stays fixed at right */
+  &.sidebar {
+    right: 0;
+    position: fixed;
+    height: 100vh;
+    box-shadow: none;
+    border-left: 1px solid var(--lx-border, #e5e7eb);
+  }
+}
+
+/* Panel Header */
+.panelHeader {
+  padding: 20px;
+  border-bottom: 1px solid var(--lx-border, #e5e7eb);
+  background: var(--lx-bg-secondary, #f9fafb);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.panelHeaderTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.panelTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--lx-text-primary, #1f2937);
+  margin: 0;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.iconButton,
+.closeButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--lx-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+  padding: 4px;
+
+  &:hover {
+    background: var(--lx-bg-tertiary);
+    color: var(--lx-text-primary);
+  }
+}
+
+/* Search Bar */
+.searchContainer {
+  position: relative;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px 40px 10px 12px;
+  border: 1px solid var(--lx-border, #e5e7eb);
+  border-radius: 6px;
+  background: var(--lx-bg-base, #ffffff);
+  color: var(--lx-text-primary, #1f2937);
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.2s;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: var(--lx-text-secondary, #6b7280);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--lx-accent, #85c8c8);
+    box-shadow: 0 0 0 3px rgba(133, 200, 200, 0.1);
+  }
+}
+
+.searchIcon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--lx-text-secondary);
+  pointer-events: none;
+  font-size: 16px;
+}
+
+/* Panel Content */
+.panelContent {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px;
+  background: var(--lx-bg-base, #ffffff);
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+
+  /* Ensure scrolling stays within panel */
+  overscroll-behavior: contain;
+}
+
+.graphInfo {
+  font-size: 14px;
+  color: var(--lx-text-secondary);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--lx-border);
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--lx-text-secondary);
+
+  p {
+    margin-bottom: 16px;
+  }
+}
+
+.configButton {
+  padding: 10px 20px;
+  background: var(--lx-accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+
+  &:hover {
+    background: var(--lx-accent-hover);
+  }
+}
+
+/* Panel Footer */
+.panelFooter {
+  padding: 12px 20px;
+  border-top: 1px solid var(--lx-border);
+  background: var(--lx-bg-secondary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--lx-text-secondary);
+
+  a {
+    color: var(--lx-text-secondary);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+      color: var(--lx-accent);
+    }
+  }
+}

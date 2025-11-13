@@ -1,3 +1,4 @@
+import Browser from 'webextension-polyfill';
 import { getLogseqSidekickConfig, saveLogseqSidekickConfig } from "@/config";
 
 export const changeOptionsHostToHostNameAndPort = async() => {
@@ -8,7 +9,7 @@ export const changeOptionsHostToHostNameAndPort = async() => {
       logseqHostName: url.hostname,
       logseqPort: parseInt(url.port),
     });
-    browser.storage.local.remove('logseqHost');
+    Browser.storage.local.remove('logseqHost');
   }
 }
 

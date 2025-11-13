@@ -30,20 +30,33 @@ export const LogseqConnectOptions = () => {
   const [availableGraphs, setAvailableGraphs] = React.useState<string[]>([]);
   const [loadingGraphs, setLoadingGraphs] = React.useState(false);
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setLogseqConfig({
+  const onChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    console.log('[Connect] onChange called:', e.target.name, '=', e.target.value);
+    const newConfig = {
       ...logseqConfig,
       [e.target.name]: e.target.value,
+    };
+    setLogseqConfig(newConfig);
+
+    // Auto-save the field that changed
+    await saveLogseqSidekickConfig({
+      [e.target.name]: e.target.value,
     });
+    console.log('[Connect] Auto-saved field:', e.target.name);
   };
 
-  const changeLogseqPort = (port: string) => {
+  const changeLogseqPort = async (port: string) => {
     if (port === '' || parseInt(port) < 0) {
       port = '0'
     }
+    const portNum = parseInt(port);
     setLogseqConfig({
       ...logseqConfig,
-      logseqPort: parseInt(port),
+      logseqPort: portNum,
+    });
+    // Auto-save port
+    await saveLogseqSidekickConfig({
+      logseqPort: portNum,
     });
   }
 

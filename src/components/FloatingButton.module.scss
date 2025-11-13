@@ -1,0 +1,35 @@
+/* Floating Button - Logseq themed */
+.floatingButton {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  background: var(--lx-accent, #85c8c8);
+  border-radius: 50%;
+  box-shadow: 0 4px 12px var(--lx-shadow, rgba(0, 0, 0, 0.1));
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  transition: all 0.3s ease;
+  pointer-events: all; /* Re-enable pointer events */
+
+  &:hover {
+    transform: scale(1.1);
+    background: var(--lx-accent-hover);
+    box-shadow: 0 6px 16px var(--lx-shadow);
+  }
+
+  &.active {
+    background: var(--lx-accent-active);
+  }
+}
+
+.resultCount {
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  user-select: none;
+}

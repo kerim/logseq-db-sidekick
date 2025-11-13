@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logseq Sidekick - Floating Button POC</title>
+    <style>
+        /* Logseq-inspired Color Variables */
+        :root {
+            /* Light mode - Logseq colors */
+            --lx-accent: #85c8c8;
+            --lx-accent-hover: #6eb5b5;
+            --lx-accent-active: #5aa3a3;
+            --lx-bg-base: #ffffff;
+            --lx-bg-secondary: #f9fafb;
+            --lx-bg-tertiary: #f3f4f6;
+            --lx-text-primary: #1f2937;
+            --lx-text-secondary: #6b7280;
+            --lx-border: #e5e7eb;
+            --lx-shadow: rgba(0, 0, 0, 0.1);
+            --lx-overlay: rgba(0, 0, 0, 0.5);
+        }
+
+        /* Dark mode - Logseq dark theme colors */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --lx-accent: #85c8c8;
+                --lx-accent-hover: #9fd6d6;
+                --lx-accent-active: #6eb5b5;
+                --lx-bg-base: #002b36;
+                --lx-bg-secondary: #073642;
+                --lx-bg-tertiary: #0e4956;
+                --lx-text-primary: #e5e7eb;
+                --lx-text-secondary: #9ca3af;
+                --lx-border: #1e5766;
+                --lx-shadow: rgba(0, 0, 0, 0.3);
+                --lx-overlay: rgba(0, 0, 0, 0.7);
+            }
+        }
+
+        /* Manual dark mode override */
+        [data-theme="dark"] {
+            --lx-accent: #85c8c8;
+            --lx-accent-hover: #9fd6d6;
+            --lx-accent-active: #6eb5b5;
+            --lx-bg-base: #002b36;
+            --lx-bg-secondary: #073642;
+            --lx-bg-tertiary: #0e4956;
+            --lx-text-primary: #e5e7eb;
+            --lx-text-secondary: #9ca3af;
+            --lx-border: #1e5766;
+            --lx-shadow: rgba(0, 0, 0, 0.3);
+            --lx-overlay: rgba(0, 0, 0, 0.7);
+        }
+
+        [data-theme="light"] {
+            --lx-accent: #85c8c8;
+            --lx-accent-hover: #6eb5b5;
+            --lx-accent-active: #5aa3a3;
+            --lx-bg-base: #ffffff;
+            --lx-bg-secondary: #f9fafb;
+            --lx-bg-tertiary: #f3f4f6;
+            --lx-text-primary: #1f2937;
+            --lx-text-secondary: #6b7280;
+            --lx-border: #e5e7eb;
+            --lx-shadow: rgba(0, 0, 0, 0.1);
+            --lx-overlay: rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: var(--lx-bg-secondary);
+            color: var(--lx-text-primary);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .demo-content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--lx-bg-base);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px var(--lx-shadow);
+        }
+
+        h1 {
+            color: var(--lx-text-primary);
+            margin-top: 0;
+        }
+
+        h2, h3 {
+            color: var(--lx-text-primary);
+        }
+
+        p {
+            color: var(--lx-text-primary);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 16px;
+            background: var(--lx-accent);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 2px 8px var(--lx-shadow);
+            z-index: 10001;
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--lx-accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--lx-shadow);
+        }
+
+        /* Floating Button */
+        .logseq-sidekick-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: var(--lx-accent);
+            border-radius: 50%;
+            box-shadow: 0 4px 12px var(--lx-shadow);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: all 0.3s ease;
+        }
+
+        .logseq-sidekick-button:hover {
+            transform: scale(1.1);
+            background: var(--lx-accent-hover);
+            box-shadow: 0 6px 16px var(--lx-shadow);
+        }
+
+        .logseq-sidekick-button.active {
+            background: var(--lx-accent-active);
+        }
+
+        /* Badge showing count */
+        .result-count {
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* Side Panel */
+        .logseq-sidekick-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: var(--lx-bg-base);
+            box-shadow: -4px 0 16px var(--lx-shadow);
+            z-index: 9999;
+            transition: right 0.3s ease, background-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logseq-sidekick-panel.open {
+            right: 0;
+        }
+
+        /* Panel Header */
+        .panel-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--lx-border);
+            background: var(--lx-bg-secondary);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .panel-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .panel-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--lx-text-primary);
+            margin: 0;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--lx-text-secondary);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .close-button:hover {
+            background: var(--lx-bg-tertiary);
+            color: var(--lx-text-primary);
+        }
+
+        /* Search Bar */
+        .search-container {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 40px 10px 12px;
+            border: 1px solid var(--lx-border);
+            border-radius: 6px;
+            background: var(--lx-bg-base);
+            color: var(--lx-text-primary);
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s;
+            box-sizing: border-box;
+        }
+
+        .search-input::placeholder {
+            color: var(--lx-text-secondary);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--lx-accent);
+            box-shadow: 0 0 0 3px rgba(133, 200, 200, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--lx-text-secondary);
+            pointer-events: none;
+            font-size: 16px;
+        }
+
+        /* Panel Content - Scrollable */
+        .panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            background: var(--lx-bg-base);
+        }
+
+        /* Result Item */
+        .result-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            background: var(--lx-bg-secondary);
+            border-radius: 6px;
+            border-left: 3px solid var(--lx-accent);
+            transition: all 0.2s;
+        }
+
+        .result-item:hover {
+            background: var(--lx-bg-tertiary);
+            border-left-color: var(--lx-accent-hover);
+        }
+
+        .result-title {
+            color: var(--lx-text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            display: block;
+        }
+
+        .result-title:hover {
+            color: var(--lx-accent);
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--lx-overlay);
+            z-index: 9998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Instructions */
+        .instructions {
+            background: var(--lx-bg-secondary);
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 4px solid var(--lx-accent);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .instructions h3 {
+            margin-top: 0;
+            color: var(--lx-text-primary);
+        }
+
+        .instructions ul {
+            margin: 10px 0 0 0;
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            color: var(--lx-text-secondary);
+            margin: 5px 0;
+        }
+
+        /* Demo content gradient */
+        .demo-gradient {
+            height: 800px;
+            background: linear-gradient(to bottom, var(--lx-bg-secondary), var(--lx-bg-tertiary));
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--lx-text-secondary);
+            transition: background 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" id="themeToggle">Toggle Dark Mode</button>
+
+    <div class="demo-content">
+        <h1>Logseq DB Sidekick - Floating Button POC</h1>
+
+        <div class="instructions">
+            <h3>Try the Demo!</h3>
+            <ul>
+                <li>Look for the teal floating button in the bottom-right corner</li>
+                <li>Click it to open the side panel with 22 Taiwan search results</li>
+                <li>The search bar at the top is non-functional (UI preview only)</li>
+                <li>The panel is scrollable if results overflow</li>
+                <li>Click the X or outside the panel to close it</li>
+                <li>Click "Toggle Dark Mode" in the top-right to test themes</li>
+            </ul>
+        </div>
+
+        <h2>About This POC</h2>
+        <p>This demonstrates the proposed UX for Phase 3:</p>
+        <ul>
+            <li><strong>Collapsed state:</strong> Floating button showing result count (like Unpaywall)</li>
+            <li><strong>Expanded state:</strong> Side panel slides in from the right</li>
+            <li><strong>Scrollable:</strong> Panel handles many results gracefully</li>
+            <li><strong>Dismissible:</strong> Click outside or close button to hide</li>
+        </ul>
+
+        <h2>Implementation Notes</h2>
+        <p>The demo uses real search results from a "taiwan" query (22 pages). This represents a typical use case with moderate result count.</p>
+
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+
+        <p>Scroll down to see more demo content...</p>
+
+        <div class="demo-gradient">
+            <p>Scrollable demo content area</p>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Side Panel -->
+    <div class="logseq-sidekick-panel" id="panel">
+        <div class="panel-header">
+            <div class="panel-header-top">
+                <h2 class="panel-title">Logseq Results</h2>
+                <button class="close-button" id="closeBtn">&times;</button>
+            </div>
+            <div class="search-container">
+                <input
+                    type="text"
+                    class="search-input"
+                    placeholder="Search in Logseq..."
+                    id="searchInput"
+                >
+                <span class="search-icon">🔍</span>
+            </div>
+        </div>
+        <div class="panel-content" id="results">
+            <!-- Results will be inserted here by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Floating Button -->
+    <div class="logseq-sidekick-button" id="floatingBtn">
+        <span class="result-count" id="resultCount">22</span>
+    </div>
+
+    <script>
+        // Fake data from real Taiwan search results
+        const searchResults = [
+            {
+                title: "A history of Indigenous Taiwan in 8 maps",
+                uuid: "681ec185-a59c-4ad5-be87-956400514047"
+            },
+            {
+                title: "Taiwan Business Bank",
+                uuid: "681f54b9-160d-4490-8c40-23d2d4b2e068"
+            },
+            {
+                title: "Analysis of Taiwan's Indigenous Student Admission Preferential Treatment Measures",
+                uuid: "6900be67-5016-403e-ad94-18f777cbd961"
+            },
+            {
+                title: "Taiwan Taxes",
+                uuid: "681ecde4-e5ba-42cd-b803-af0178208461"
+            },
+            {
+                title: "Fun Divers Taiwan 瘋潛水",
+                uuid: "6846191b-de43-4217-acad-ec976cbe73dc"
+            },
+            {
+                title: "Taiwan Hiking Trails",
+                uuid: "68f384af-4f03-4361-94d3-3df8bd2ef7c9"
+            },
+            {
+                title: "Taiwanese band",
+                uuid: "683ac2c0-6c71-4f8f-bef7-b0879d937c26"
+            },
+            {
+                title: "Ethnic Language Vitality of Taiwan's Indigenous Peoples",
+                uuid: "68dcf036-0ed9-4f05-a499-8a3e056313e6"
+            },
+            {
+                title: "銀幕內外的台灣原住民  Indigenous Taiwanese on and off Screen",
+                uuid: "682133d1-db83-4d08-99c0-8455dae84e3d"
+            },
+            {
+                title: "Organizing Around Palestine in the USA and Taiwan",
+                uuid: "682bfe4e-38b5-45f8-a543-5088f5b25e2f"
+            },
+            {
+                title: "taiwan higher education",
+                uuid: "68e91c3a-03dc-4ebf-ba3e-f263319236e4"
+            },
+            {
+                title: "International Journal of Taiwan Studies",
+                uuid: "683e7ae7-2e9b-4fc8-86ea-c74faa40eba7"
+            },
+            {
+                title: "Taiwan Archaeology",
+                uuid: "68f87d93-7127-4ff0-9782-538f0c3a538e"
+            },
+            {
+                title: "Taiwan's Indigenous Language Nests",
+                uuid: "687ba0df-e45b-43bb-844f-c7f6f0d404af"
+            },
+            {
+                title: "Taiwan MOE",
+                uuid: "69006c17-b5ff-4506-8643-cd1d82814aa6"
+            },
+            {
+                title: "Taiwan Archaeology and Indigenous Peoples",
+                uuid: "682bfa2d-b753-44e8-842d-1f054ec52d06"
+            },
+            {
+                title: "Review of indigenous language teaching and beyond in Taiwan",
+                uuid: "68fdfaeb-9e48-4ea7-9e49-a82888e0795f"
+            },
+            {
+                title: "Taiwan Language and Society Research Group",
+                uuid: "68318527-7b07-486d-b744-19ece8a594fb"
+            },
+            {
+                title: "Amnesty International Taiwan English Speaking Group",
+                uuid: "684bf5c5-df06-4100-97d0-723a04791386"
+            },
+            {
+                title: "Taiwan",
+                uuid: "683959ef-c08b-4245-91b6-0221b571ef55"
+            },
+            {
+                title: "Taiwan",
+                uuid: "6855175f-8d51-4981-9aec-74a8a4c4da70"
+            },
+            {
+                title: "Taiwan Demography",
+                uuid: "68973571-863d-4d4e-a9a2-10decd9ab214"
+            }
+        ];
+
+        // DOM elements
+        const floatingBtn = document.getElementById('floatingBtn');
+        const panel = document.getElementById('panel');
+        const overlay = document.getElementById('overlay');
+        const closeBtn = document.getElementById('closeBtn');
+        const resultsContainer = document.getElementById('results');
+        const resultCount = document.getElementById('resultCount');
+
+        // Update count
+        resultCount.textContent = searchResults.length;
+
+        // Render results
+        function renderResults() {
+            resultsContainer.innerHTML = searchResults.map(result => `
+                <div class="result-item">
+                    <a href="logseq://graph/Chrome%20Import%202025-11-09?block-id=${result.uuid}"
+                       class="result-title">
+                        ${result.title}
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        // Toggle panel
+        function togglePanel() {
+            const isOpen = panel.classList.contains('open');
+            if (isOpen) {
+                closePanel();
+            } else {
+                openPanel();
+            }
+        }
+
+        function openPanel() {
+            panel.classList.add('open');
+            overlay.classList.add('visible');
+            floatingBtn.classList.add('active');
+        }
+
+        function closePanel() {
+            panel.classList.remove('open');
+            overlay.classList.remove('visible');
+            floatingBtn.classList.remove('active');
+        }
+
+        // Event listeners
+        floatingBtn.addEventListener('click', togglePanel);
+        closeBtn.addEventListener('click', closePanel);
+        overlay.addEventListener('click', closePanel);
+
+        // Prevent panel clicks from closing
+        panel.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // Initialize
+        renderResults();
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        // Check for saved theme preference or default to auto
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            html.setAttribute('data-theme', savedTheme);
+            updateToggleButton(savedTheme);
+        } else {
+            // Use browser preference
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            updateToggleButton(prefersDark ? 'dark' : 'light');
+        }
+
+        // Toggle theme
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            let newTheme;
+
+            if (currentTheme === 'dark') {
+                newTheme = 'light';
+            } else if (currentTheme === 'light') {
+                newTheme = 'auto';
+                html.removeAttribute('data-theme');
+            } else {
+                newTheme = 'dark';
+            }
+
+            if (newTheme !== 'auto') {
+                html.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            } else {
+                localStorage.removeItem('theme');
+            }
+
+            updateToggleButton(newTheme);
+        });
+
+        function updateToggleButton(theme) {
+            if (theme === 'dark') {
+                themeToggle.textContent = '☀️ Light Mode';
+            } else if (theme === 'light') {
+                themeToggle.textContent = '🌙 Dark Mode';
+            } else {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                themeToggle.textContent = prefersDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+            }
+        }
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (!html.hasAttribute('data-theme')) {
+                updateToggleButton('auto');
+            }
+        });
+    </script>
+</body>
+</html>
