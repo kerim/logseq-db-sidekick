@@ -17,9 +17,10 @@ Logseq DB Sidekick is a browser extension that allows you to access your Logseq 
 This fork differs from the original Logseq Copilot in several key ways:
 
 - **DB Graphs Only**: Works exclusively with Logseq's new database (DB) graph format, not file-based/markdown graphs
-- **HTTP Server Architecture**: Uses a separate Python HTTP server instead of Logseq's plugin API
-- **Search-Only Focus**: Designed purely for displaying search results - no editing, no quick capture features
+- **HTTP Server Architecture**: Uses a separate Python HTTP server which connects to Logseq's CLI, instead of the API.
+- **Search-Only Focus**: Simplified plugin, only focused on searching pages (not blocks), and removing all non-search functionality, like clipping content to Logseq.
 - **Independent Operation**: Doesn't require Logseq Desktop to be running
+- **Redesigned UI**: Uses a simpler, collapsable, sidebar, instead of injecting results into search page.
 
 ## Requirements
 
@@ -47,7 +48,34 @@ This fork differs from the original Logseq Copilot in several key ways:
 
 ### Browser Extension
 
-*(Installation instructions to be added - currently in development)*
+#### Chrome/Edge/Brave (Chromium-based browsers)
+
+1. Download or clone this repository
+2. Build the extension:
+   ```bash
+   cd logseq-sidekick
+   pnpm install
+   VERSION=0.0.46 pnpm run build
+   ```
+3. Open Chrome and navigate to `chrome://extensions/`
+4. Enable "Developer mode" (toggle in top right)
+5. Click "Load unpacked"
+6. Select the `build/chrome/` directory from this project
+7. The extension icon should appear in your browser toolbar
+
+#### Firefox
+
+1. Download or clone this repository
+2. Build the extension:
+   ```bash
+   cd logseq-sidekick
+   pnpm install
+   VERSION=0.0.46 pnpm run build
+   ```
+3. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`
+4. Click "Load Temporary Add-on"
+5. Navigate to the `build/firefox/` directory and select the `manifest.json` file
+6. The extension will be loaded (note: temporary add-ons are removed when Firefox closes)
 
 ## Configuration
 
